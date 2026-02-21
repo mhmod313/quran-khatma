@@ -1,14 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ختمة القرآن العائلية</title>
+
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --primary:#16a34a;
+      --primary2:#22c55e;
+      --shadow:0 10px 25px rgba(2,6,23,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+      background: radial-gradient(1200px 600px at 80% -10%, rgba(34,197,94,.18), transparent 60%),
+                  radial-gradient(900px 500px at 10% 0%, rgba(22,163,74,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+
+    .container{
+      max-width:1100px;
+      margin: 24px auto 60px;
+      padding: 0 14px;
+    }
+
+    .hero{
+      background: linear-gradient(135deg, rgba(22,163,74,.10), rgba(34,197,94,.08));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 18px 14px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-40px -80px auto auto;
+      width:220px;height:220px;
+      background: radial-gradient(circle, rgba(34,197,94,.30), transparent 60%);
+      filter: blur(2px);
+      transform: rotate(15deg);
+    }
+    .title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      position:relative;
+      z-index:1;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size: 14px;
+      line-height:1.7;
+      position:relative;
+      z-index:1;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+    .btn{
+      border:1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      box-shadow: 0 6px 16px rgba(2,6,23,.05);
+      user-select:none;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color:white;
+      border-color: transparent;
+    }
+    .btn:active{transform: translateY(1px);}
+
+    .status{
+      margin-top: 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .overall{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      color:var(--muted);
+      font-size: 13px;
+    }
+    .bar{
+      width: 220px;
+      height: 10px;
+      border-radius: 999px;
+      background: #e9eef7;
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    /* Card */
+    .card{
+      margin-top: 14px;
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding: 12px 14px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      background: linear-gradient(180deg, rgba(15,23,42,.02), transparent);
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.6;
+    }
+
+    /* Table wrapper (scroll on mobile) */
+    .tableWrap{
+      width:100%;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table{
+      border-collapse:separate;
+      border-spacing:0;
+      width:max-content;
+      min-width: 100%;
+      font-size: 13px;
+    }
+
+    th, td{
+      border-bottom:1px solid var(--border);
+      border-left:1px solid var(--border);
+      padding: 8px 10px;
+      text-align:center;
+      background:white;
+    }
+    th:first-child, td:first-child{
+      border-right:1px solid var(--border);
+    }
+
+    /* Sticky header + first column */
+    thead th{
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: #f1f7f3;
+      color:#14532d;
+      font-weight:700;
+    }
+    tbody th.nameCol{
+      position: sticky;
+      right: 0; /* RTL */
+      z-index: 2;
+      background: #f9fbff;
+      text-align:right;
+      min-width: 140px;
+      white-space:nowrap;
+    }
+    thead th:first-child{
+      right:0;
+      z-index:4;
+    }
+
+    tbody tr:nth-child(even) td,
+    tbody tr:nth-child(even) th.nameCol{
+      background: #fbfdff;
+    }
+
+    .partHeader{
+      min-width: 46px;
+      font-weight:700;
+    }
+
+    input[type="checkbox"]{
+      width: 18px;
+      height: 18px;
+      cursor:pointer;
+      accent-color: var(--primary);
+    }
+
+    /* Row progress */
+    .rowProgress{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:flex-start;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:6px;
+    }
+    .miniBar{
+      width: 110px;
+      height: 8px;
+      border-radius: 999px;
+      background:#e9eef7;
+      border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .miniBar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      background: rgba(255,255,255,.92);
+      border:1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-width: 220px;
+      display:none;
+      align-items:center;
+      gap:10px;
+      color: var(--text);
+      z-index: 9999;
+      backdrop-filter: blur(6px);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: var(--primary);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.15);
+    }
+    .toast small{color:var(--muted)}
+  </style>
+</head>
+
 <body>
+  <div class="container">
+    <div class="hero">
+      <div class="title">
+        <div>
+          <h1>📖 ختمة القرآن العائلية</h1>
+          <div class="subtitle">اضغط ✔️ وسيتم الحفظ تلقائياً للجميع. يمكنك الضغط على “تحديث” لرؤية آخر التغييرات.</div>
+        </div>
 
-<h1>📖 ختمة القرآن العائلية</h1>
-<p>اضغط ✔️ وسيتم الحفظ تلقائياً للجميع</p>
-<div id="status" style="margin:10px;color:#555"></div>
+        <div class="actions">
+          <button class="btn" id="refreshBtn">🔄 تحديث</button>
+          <button class="btn primary" id="scrollTopBtn">⬆️ أعلى</button>
+        </div>
+      </div>
 
-<table id="tbl"></table>
+      <div class="status">
+        <div class="chip" id="status">⏳ جاري التحميل...</div>
+
+        <div class="overall">
+          <span id="overallText">0 / 420</span>
+          <div class="bar"><div id="overallBar"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cardHeader">
+        <div class="hint">
+          👈 مرّر الجدول أفقياً على الجوال. الصف العلوي وعمود الاسم ثابتين لتسهيل القراءة.
+        </div>
+        <div class="hint" id="lastSync">آخر تحديث: —</div>
+      </div>
+
+      <div class="tableWrap">
+        <table id="tbl" aria-label="جدول الختمة">
+          <thead id="thead"></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div class="dot"></div>
+    <div>
+      <div id="toastTitle">تم</div>
+      <small id="toastMsg">—</small>
+    </div>
+  </div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const API = "https://script.google.com/macros/s/AKfycbyItYX-jfLFljgOm-n5P7Vt-4x0FAAlomt3Q0RL7Vx9HPxAMNQy4ngu0yvAZKpr3mpGKQ/exec"; 
+  const API = "https://script.google.com/macros/s/AKfycbyItYX-jfLFljgOm-n5P7Vt-4x0FAAlomt3Q0RL7Vx9HPxAMNQy4ngu0yvAZKpr3mpGKQ/exec";
 
   const names = [
     "ام محمود","حليم","فاطمة","سارة","محمود","اسراء",
@@ -16,70 +353,146 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   const parts = 30;
 
-  const status = document.getElementById("status");
-  const table = document.getElementById("tbl");
+  const statusEl = document.getElementById("status");
+  const thead = document.getElementById("thead");
+  const tbody = document.getElementById("tbody");
+  const overallText = document.getElementById("overallText");
+  const overallBar = document.getElementById("overallBar");
+  const lastSync = document.getElementById("lastSync");
+  const refreshBtn = document.getElementById("refreshBtn");
+  const scrollTopBtn = document.getElementById("scrollTopBtn");
+  const toast = document.getElementById("toast");
+  const toastTitle = document.getElementById("toastTitle");
+  const toastMsg = document.getElementById("toastMsg");
 
-  function setStatus(msg){ status.textContent = msg; }
+  let db = []; // rows from sheet (excluding header)
 
-  if (!table) {
-    console.error("Table #tbl not found.");
-    return;
+  function setStatus(text){ statusEl.textContent = text; }
+
+  function showToast(title, msg){
+    toastTitle.textContent = title;
+    toastMsg.textContent = msg;
+    toast.style.display = "flex";
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=> toast.style.display="none", 1800);
   }
 
-  // بناء رأس الجدول
-  let header = "<tr><th>الاسم</th>";
-  for (let i = 1; i <= parts; i++) header += `<th>${i}</th>`;
-  header += "</tr>";
-  table.innerHTML = header;
+  function buildHeader(){
+    let h = "<tr><th class='nameCol'>الاسم</th>";
+    for(let i=1;i<=parts;i++) h += `<th class="partHeader">${i}</th>`;
+    h += "</tr>";
+    thead.innerHTML = h;
+  }
 
-  // تحميل البيانات من الشيت
-  setStatus("جاري تحميل البيانات...");
-  fetch(API)
-    .then(r => r.json())
-    .then(data => {
-      const db = data.slice(1); // يتجاوز الهيدر name/part/done
+  function isChecked(name, part){
+    // find row [name, part, done]
+    const row = db.find(x => String(x[0])===name && Number(x[1])===part);
+    return row && Number(row[2])===1;
+  }
 
-      names.forEach(name => {
-        let row = `<tr><th>${name}</th>`;
-        for (let i = 1; i <= parts; i++) {
-          const found = db.find(x => x[0] === name && Number(x[1]) === i && Number(x[2]) === 1);
-          const checked = found ? "checked" : "";
-          row += `<td><input type="checkbox" ${checked} data-name="${name}" data-part="${i}"></td>`;
-        }
-        row += "</tr>";
-        table.innerHTML += row;
-      });
+  function computeRowCount(name){
+    let count = 0;
+    for(let i=1;i<=parts;i++){
+      if(isChecked(name,i)) count++;
+    }
+    return count;
+  }
 
-      setStatus("✅ جاهز");
-    })
-    .catch(err => {
-      console.error("Fetch failed:", err);
-      setStatus("❌ فشل تحميل البيانات: تأكد من رابط API والنشر (Anyone).");
+  function updateOverall(){
+    const total = names.length * parts;
+    let done = 0;
+    names.forEach(n => done += computeRowCount(n));
+    overallText.textContent = `${done} / ${total}`;
+    overallBar.style.width = total ? (done/total*100).toFixed(1) + "%" : "0%";
+  }
+
+  function renderBody(){
+    let html = "";
+    names.forEach(name => {
+      const rowCount = computeRowCount(name);
+      const pct = (rowCount/parts*100) || 0;
+
+      html += `<tr>
+        <th class="nameCol">
+          <div style="display:flex;flex-direction:column;align-items:flex-start;">
+            <div style="font-weight:700;color:#0f172a">${name}</div>
+            <div class="rowProgress">
+              <span>${rowCount}/${parts}</span>
+              <div class="miniBar"><div style="width:${pct.toFixed(1)}%"></div></div>
+            </div>
+          </div>
+        </th>`;
+
+      for(let i=1;i<=parts;i++){
+        const checked = isChecked(name,i) ? "checked" : "";
+        html += `<td><input type="checkbox" ${checked} data-name="${name}" data-part="${i}"></td>`;
+      }
+
+      html += `</tr>`;
     });
 
-  // حفظ عند تغيير أي Checkbox
-  table.addEventListener("change", (e) => {
-    if (e.target && e.target.type === "checkbox") {
+    tbody.innerHTML = html;
+    updateOverall();
+  }
+
+  function load(){
+    setStatus("⏳ جاري التحميل...");
+    return fetch(API)
+      .then(r => r.json())
+      .then(data => {
+        db = data.slice(1); // skip header
+        renderBody();
+        setStatus("✅ جاهز");
+        lastSync.textContent = "آخر تحديث: " + new Date().toLocaleString("ar");
+      })
+      .catch(err => {
+        console.error(err);
+        setStatus("❌ فشل التحميل (تحقق من النشر Anyone)");
+        showToast("خطأ", "فشل تحميل البيانات");
+      });
+  }
+
+  function save(name, part, done){
+    setStatus("💾 جاري الحفظ...");
+    return fetch(API, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ name, part, done })
+    })
+    .then(() => {
+      setStatus("✅ تم الحفظ");
+      showToast("تم الحفظ", `${name} • الجزء ${part}`);
+      // تحديث محلي سريع بدون انتظار reload كامل
+      const idx = db.findIndex(x => String(x[0])===name && Number(x[1])===part);
+      if(idx === -1) db.push([name, part, done]);
+      else db[idx][2] = done;
+      renderBody();
+    })
+    .catch(err => {
+      console.error(err);
+      setStatus("❌ فشل الحفظ");
+      showToast("خطأ", "فشل الحفظ");
+    });
+  }
+
+  // Events
+  refreshBtn.addEventListener("click", () => load());
+  scrollTopBtn.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
+
+  tbody.addEventListener("change", (e) => {
+    if(e.target && e.target.type === "checkbox"){
       const name = e.target.dataset.name;
       const part = Number(e.target.dataset.part);
       const done = e.target.checked ? 1 : 0;
-
-      setStatus("💾 جاري الحفظ...");
-
-      fetch(API, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ name, part, done })
-      })
-      .then(() => setStatus("✅ تم الحفظ"))
-      .catch(err => {
-        console.error("Save failed:", err);
-        setStatus("❌ فشل الحفظ");
-      });
+      save(name, part, done);
     }
   });
+
+  // init
+  buildHeader();
+  load();
 });
 </script>
-
 </body>
+</html>

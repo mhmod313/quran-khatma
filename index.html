@@ -1,76 +1,43 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>ختمة القرآن العائلية</title>
-
-<style>
-body{
-  font-family:Arial;
-  background:#f5f7fb;
-  text-align:center;
-}
-h1{color:#2e7d32}
-table{
-  border-collapse:collapse;
-  margin:auto;
-  background:white;
-}
-td,th{
-  border:1px solid #ddd;
-  padding:6px;
-  font-size:14px;
-}
-th{
-  background:#4CAF50;
-  color:white;
-}
-input{width:18px;height:18px}
-button{
-  margin:15px;
-  padding:10px 20px;
-  font-size:18px;
-  background:#2e7d32;
-  color:white;
-  border:none;
-  border-radius:8px;
-}
-</style>
-</head>
-
 <body>
 
 <h1>📖 ختمة القرآن العائلية</h1>
-<p>اضغط ✔️ ثم اضغط زر حفظ التقدم</p>
-
-<button onclick="saveData()">💾 حفظ التقدم</button>
+<p>اضغط ✔️ وسيتم الحفظ تلقائياً للجميع</p>
+<div id="status" style="margin:10px;color:#555"></div>
 
 <table id="tbl"></table>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const API = "PUT_YOUR_WEBAPP_URL_HERE"; // رابط Google Apps Script Web App
+  const API = "ضع_رابط_الويب_آب_هنا"; // مثال: https://script.google.com/macros/s/XXXX/exec
+
   const names = [
     "ام محمود","حليم","فاطمة","سارة","محمود","اسراء",
     "دانيا","سعاد","شام","محمد","بتول","عبدالله","حسن","جاد"
   ];
   const parts = 30;
 
+  const status = document.getElementById("status");
   const table = document.getElementById("tbl");
+
+  function setStatus(msg){ status.textContent = msg; }
+
   if (!table) {
-    console.error("Table #tbl not found. Make sure you have <table id='tbl'></table> in HTML.");
+    console.error("Table #tbl not found.");
     return;
   }
 
+  // بناء رأس الجدول
+  let header = "<tr><th>الاسم</th>";
+  for (let i = 1; i <= parts; i++) header += `<th>${i}</th>`;
+  header += "</tr>";
+  table.innerHTML = header;
+
+  // تحميل البيانات من الشيت
+  setStatus("جاري تحميل البيانات...");
   fetch(API)
     .then(r => r.json())
     .then(data => {
       const db = data.slice(1); // يتجاوز الهيدر name/part/done
-
-      let header = "<tr><th>الاسم</th>";
-      for (let i = 1; i <= parts; i++) header += `<th>${i}</th>`;
-      header += "</tr>";
-      table.innerHTML = header;
 
       names.forEach(name => {
         let row = `<tr><th>${name}</th>`;
@@ -83,23 +50,36 @@ document.addEventListener("DOMContentLoaded", () => {
         table.innerHTML += row;
       });
 
-      table.addEventListener("change", (e) => {
-        if (e.target && e.target.type === "checkbox") {
-          const name = e.target.dataset.name;
-          const part = Number(e.target.dataset.part);
-          const done = e.target.checked ? 1 : 0;
-
-          fetch(API, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ name, part, done })
-          }).catch(err => console.error("Save failed:", err));
-        }
-      });
+      setStatus("✅ جاهز");
     })
-    .catch(err => console.error("Fetch failed:", err));
+    .catch(err => {
+      console.error("Fetch failed:", err);
+      setStatus("❌ فشل تحميل البيانات: تأكد من رابط API والنشر (Anyone).");
+    });
+
+  // حفظ عند تغيير أي Checkbox
+  table.addEventListener("change", (e) => {
+    if (e.target && e.target.type === "checkbox") {
+      const name = e.target.dataset.name;
+      const part = Number(e.target.dataset.part);
+      const done = e.target.checked ? 1 : 0;
+
+      setStatus("💾 جاري الحفظ...");
+
+      fetch(API, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ name, part, done })
+      })
+      .then(() => setStatus("✅ تم الحفظ"))
+      .catch(err => {
+        console.error("Save failed:", err);
+        setStatus("❌ فشل الحفظ");
+      });
+    }
+  });
 });
 </script>
 
 </body>
-</html>
